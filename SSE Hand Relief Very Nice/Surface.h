@@ -560,6 +560,26 @@ public:
 			}
 		}
 	}
+	void BltMemcpy(Vei2 dstPt, const RectI& srcRect, const Surface& src)
+	{
+		const Color* __restrict ptSrc = src.GetBufferConst();
+		Color* __restrict ptDst = GetBuffer();
+
+		ptSrc += srcRect.top * src.GetWidth() + srcRect.left;
+		ptDst += dstPt.y * GetWidth() + dstPt.x;
+
+		Color* ptDstEnd = ptDst + srcRect.GetHeight() * GetWidth();
+
+		const int rowByteSize = srcRect.GetWidth() * sizeof(Color);
+
+		while (ptDst < ptDstEnd)
+		{
+			::memcpy(ptDst, ptSrc, rowByteSize);
+
+			ptDst += GetWidth();
+			ptSrc += src.GetWidth();
+		}
+	}
 	void BltBlend( Vei2 dstPt,const RectI& srcRect,const Surface& src,unsigned char alpha )
 	{
 		const unsigned int mask = 0xFF;
